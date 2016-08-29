@@ -1,6 +1,16 @@
+#ifdef __APPLE__
+#include "TargetConditionals.h"
+#import <Foundation/Foundation.h>
+#endif
+
+
+
+
+
 #ifdef WIN32
 #include <windows.h>
 #endif
+
 #include <unistd.h>
 #include <iostream>
 #include "TAppEncTop.h"
@@ -47,7 +57,11 @@ static HEVCEncoderContext *jctvc_open(const HEVCEncodeParams *params)
         return NULL;
     }
 #else
+#ifdef __APPLE__
+    strcpy(buf, [NSTemporaryDirectory() fileSystemRepresentation]);
+#else
     strcpy(buf, "/tmp/");
+#endif
 #endif
     snprintf(s->infilename, sizeof(s->infilename), "%sout%d-%d.yuv", buf, getpid(), tmp_idx);
     snprintf(s->outfilename, sizeof(s->outfilename), "%sout%d-%d.bin", buf, getpid(), tmp_idx);
